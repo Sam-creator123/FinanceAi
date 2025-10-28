@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InsureGuard AI - Intelligent Fraud Detection</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/theme.css">
-    <link rel="stylesheet" href="styles/landing-page.css">
-    <link rel="stylesheet" href="styles/submission-page.css">
-    <link rel="stylesheet" href="styles/loading-page.css">
-    <link rel="stylesheet" href="styles/results-page.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/landing-page.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/submission-page.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/loading-page.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/results-page.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Icons&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -369,13 +369,13 @@
     </div>
 
     <!-- Scripts -->
-    <script src="config/app-config.js"></script>
-    <script src="config/features-config.js"></script>
-    <script src="scripts/theme-manager.js"></script>
-    <script src="scripts/page-navigation.js"></script>
-    <script src="scripts/file-upload-handler.js"></script>
-    <script src="scripts/analysis-simulator.js"></script>
-    <script src="scripts/results-renderer.js"></script>
-    <script src="scripts/app.js"></script>
+    <script src="{{ url_for('static', filename='config/app-config.js') }}"></script>
+    <script src="{{ url_for('static', filename='config/features-config.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/theme-manager.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/page-navigation.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/file-upload-handler.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/analysis-simulator.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/results-renderer.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/app.js') }}"></script>
 </body>
 </html>

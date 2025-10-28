@@ -10,6 +10,13 @@ class FileUploadHandler {
             image: null,
             text: null,
         };
+
+        // Filenames as saved on server after upload
+        this.uploadedFilesServer = {
+            voice: null,
+            image: null,
+            text: null,
+        };
         
         this.inputs = {
             voice: document.getElementById('voice-input'),
@@ -57,6 +64,18 @@ class FileUploadHandler {
             this.submitButton.addEventListener('click', () => {
                 this.submitClaim();
             });
+        }
+
+        // Upload-to-server buttons
+        const uploadVoiceBtn = document.getElementById('upload-voice-server-btn');
+        const uploadImageBtn = document.getElementById('upload-image-server-btn');
+
+        if (uploadVoiceBtn) {
+            uploadVoiceBtn.addEventListener('click', () => this.uploadFileToServer('voice'));
+        }
+
+        if (uploadImageBtn) {
+            uploadImageBtn.addEventListener('click', () => this.uploadFileToServer('image'));
         }
         
         // Listen for reset event
@@ -158,13 +177,109 @@ class FileUploadHandler {
     
     submitClaim() {
         if (!this.submitButton.disabled) {
-            // Trigger the analysis
-            window.pageNavigation.navigateTo('loading');
-            
-            // Start analysis with uploaded files
-            if (window.analysisSimulator) {
-                window.analysisSimulator.startAnalysis(this.uploadedFiles);
+            // Trigger server-side analysis flow:
+            (async () => {
+                try {
+                    const voiceOk = await this.uploadFileToServer('voice');
+                    const imageOk = await this.uploadFileToServer('image');
+
+                    if (!voiceOk || !imageOk) {
+                        // If upload failed, do not proceed
+                        return;
+                    }
+
+                    // Read text file content (if provided)
+                    let textContent = '';
+                    const textFile = this.uploadedFiles['text'];
+                    if (textFile) {
+                        textContent = await new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = () => resolve(reader.result);
+                            reader.onerror = () => reject(new Error('Failed to read text file'));
+                            reader.readAsText(textFile);
+                        });
+                    }
+
+                    // Show loading page while server analyzes
+                    window.pageNavigation.navigateTo('loading');
+
+                    // Call backend analyze endpoint with server filenames and text
+                    const payload = {
+                        image: this.uploadedFilesServer['image'],
+                        voice: this.uploadedFilesServer['voice'],
+                        text: textContent,
+                    };
+
+                    const resp = await fetch('/analyze', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (!resp.ok) {
+                        this.updateFileStatus('voice', 'error', 'Analysis failed on server');
+                        this.updateFileStatus('image', 'error', 'Analysis failed on server');
+                        console.error('Analyze failed', resp.status);
+                        return;
+                    }
+
+                    const results = await resp.json();
+
+                    // If resultsRenderer exists, display results
+                    if (window.resultsRenderer) {
+                        // results returned already keyed by type: {image: {...}, text: {...}, voice: {...}}
+                        window.resultsRenderer.displayResults(results);
+                    }
+
+                    // Navigate to results page
+                    window.pageNavigation.navigateTo('results');
+                } catch (err) {
+                    console.error('Error uploading files before analysis', err);
+                    this.updateFileStatus('voice', 'error', 'Upload/analysis failed.');
+                    this.updateFileStatus('image', 'error', 'Upload/analysis failed.');
+                }
+            })();
+        }
+    }
+
+    async uploadFileToServer(type) {
+        const file = this.uploadedFiles[type];
+        if (!file) {
+            this.updateFileStatus(type, 'error', 'No file selected to upload');
+            return false;
+        }
+
+        const endpoint = type === 'voice' ? '/upload/voice' : '/upload/image';
+        const formData = new FormData();
+        formData.append(type, file, file.name);
+
+        try {
+            const resp = await fetch(endpoint, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!resp.ok) {
+                const text = await resp.text();
+                this.updateFileStatus(type, 'error', `Server error: ${resp.status}`);
+                console.error('Upload failed', resp.status, text);
+                return false;
             }
+
+            const data = await resp.json();
+            if (data && data.status === 'success') {
+                this.updateFileStatus(type, 'success', `Uploaded: ${data.filename}`);
+                // store server filename
+                this.uploadedFilesServer[type] = data.filename;
+                return true;
+            }
+
+            this.updateFileStatus(type, 'error', data?.error || 'Unknown server response');
+            return false;
+        } catch (err) {
+            console.error('Upload error', err);
+            this.updateFileStatus(type, 'error', 'Network error while uploading');
+            return false;
         }
     }
     
