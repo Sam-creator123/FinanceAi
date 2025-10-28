@@ -1,0 +1,138 @@
+/* ============================================
+   THEME STYLES - Color system and theming
+   ============================================ */
+
+/* Default Theme - Dark Mode */
+body {
+    --background-color: #121212;
+    --surface-color: #1E1E1E;
+    --surface-variant: #2C2C2C;
+    --text-primary: #E0E0E0;
+    --text-secondary: #A0A0A0;
+    --border-color: #333333;
+    --hover-color: rgba(255, 255, 255, 0.08);
+    --disabled-color: #424242;
+}
+
+/* Light Mode */
+body.light-theme {
+    --background-color: #FAFAFA;
+    --surface-color: #FFFFFF;
+    --surface-variant: #F5F5F5;
+    --text-primary: #1F1F1F;
+    --text-secondary: #616161;
+    --border-color: #E0E0E0;
+    --hover-color: rgba(0, 0, 0, 0.04);
+    --disabled-color: #E0E0E0;
+}
+
+/* Accent Colors - Blue (Default) */
+body,
+body[data-accent="blue"] {
+    --primary-color: #2196F3;
+    --primary-light: #64B5F6;
+    --primary-dark: #1976D2;
+    --primary-alpha: rgba(33, 150, 243, 0.12);
+}
+
+/* Purple Accent */
+body[data-accent="purple"] {
+    --primary-color: #9C27B0;
+    --primary-light: #BA68C8;
+    --primary-dark: #7B1FA2;
+    --primary-alpha: rgba(156, 39, 176, 0.12);
+}
+
+/* Green Accent */
+body[data-accent="green"] {
+    --primary-color: #4CAF50;
+    --primary-light: #81C784;
+    --primary-dark: #388E3C;
+    --primary-alpha: rgba(76, 175, 80, 0.12);
+}
+
+/* Orange Accent */
+body[data-accent="orange"] {
+    --primary-color: #FF9800;
+    --primary-light: #FFB74D;
+    --primary-dark: #F57C00;
+    --primary-alpha: rgba(255, 152, 0, 0.12);
+}
+
+/* Red Accent */
+body[data-accent="red"] {
+    --primary-color: #F44336;
+    --primary-light: #E57373;
+    --primary-dark: #D32F2F;
+    --primary-alpha: rgba(244, 67, 54, 0.12);
+}
+
+/* Teal Accent */
+body[data-accent="teal"] {
+    --primary-color: #009688;
+    --primary-light: #4DB6AC;
+    --primary-dark: #00796B;
+    --primary-alpha: rgba(0, 150, 136, 0.12);
+}
+
+/* Status Colors */
+:root {
+    --success-color: #4CAF50;
+    --warning-color: #FF9800;
+    --error-color: #F44336;
+    --info-color: #2196F3;
+    
+    --success-light: #81C784;
+    --warning-light: #FFB74D;
+    --error-light: #E57373;
+    --info-light: #64B5F6;
+    
+    --success-alpha: rgba(76, 175, 80, 0.12);
+    --warning-alpha: rgba(255, 152, 0, 0.12);
+    --error-alpha: rgba(244, 67, 54, 0.12);
+    --info-alpha: rgba(33, 150, 243, 0.12);
+}
+
+/* Apply theme colors to body */
+body {
+    background-color: var(--background-color);
+    color: var(--text-primary);
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-badge.success {
+    background: var(--success-alpha);
+    color: var(--success-color);
+}
+
+.status-badge.warning {
+    background: var(--warning-alpha);
+    color: var(--warning-color);
+}
+
+.status-badge.error {
+    background: var(--error-alpha);
+    color: var(--error-color);
+}
+
+.status-badge.info {
+    background: var(--info-alpha);
+    color: var(--info-color);
+}
+
+/* Theme transition */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

@@ -1,0 +1,380 @@
+/* ============================================
+   RESULTS PAGE STYLES
+   ============================================ */
+
+#results-page {
+    background: var(--background-color);
+    padding: var(--spacing-lg);
+    min-height: 100vh;
+}
+
+.results-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Results Header */
+.results-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.results-header .page-title {
+    margin-bottom: var(--spacing-sm);
+}
+
+.results-header .page-subtitle {
+    color: var(--text-secondary);
+}
+
+#analysis-date {
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+/* Overall Score Card */
+.overall-score-card {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-large);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.overall-score-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+}
+
+.score-header {
+    margin-bottom: var(--spacing-md);
+}
+
+.score-header h2 {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.score-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Score Circle */
+.score-circle-container {
+    margin: var(--spacing-lg) auto;
+    display: flex;
+    justify-content: center;
+}
+
+.score-circle {
+    position: relative;
+    width: 200px;
+    height: 200px;
+}
+
+.score-circle svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+}
+
+.score-circle-bg {
+    fill: none;
+    stroke: var(--surface-variant);
+    stroke-width: 12;
+}
+
+.score-circle-fill {
+    fill: none;
+    stroke: var(--primary-color);
+    stroke-width: 12;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-out;
+}
+
+.score-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.score-percentage {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.score-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+/* Score Status Badge */
+.overall-status {
+    display: inline-block;
+    padding: 8px 24px;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: var(--spacing-md);
+}
+
+.overall-status.authentic {
+    background: var(--success-alpha);
+    color: var(--success-color);
+}
+
+.overall-status.suspicious {
+    background: var(--warning-alpha);
+    color: var(--warning-color);
+}
+
+.overall-status.fraudulent {
+    background: var(--error-alpha);
+    color: var(--error-color);
+}
+
+/* Detailed Results */
+.detailed-results {
+    margin-bottom: var(--spacing-xl);
+}
+
+.detailed-results h2 {
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+}
+
+.result-card {
+    background: var(--surface-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--spacing-md);
+    transition: all var(--transition-speed);
+    border-left: 4px solid transparent;
+}
+
+.result-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.result-card.authentic {
+    border-left-color: var(--success-color);
+}
+
+.result-card.suspicious {
+    border-left-color: var(--warning-color);
+}
+
+.result-card.fraudulent {
+    border-left-color: var(--error-color);
+}
+
+/* Result Header */
+.result-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.result-header .material-icons {
+    font-size: 32px;
+    color: var(--primary-color);
+}
+
+.result-header h3 {
+    color: var(--text-primary);
+}
+
+/* Result Content */
+.result-content {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+}
+
+.result-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.result-value {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Confidence Bar */
+.confidence-bar-container {
+    margin-top: var(--spacing-sm);
+}
+
+.confidence-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.875rem;
+}
+
+.confidence-label span:first-child {
+    color: var(--text-secondary);
+}
+
+.confidence-label span:last-child {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.confidence-bar {
+    height: 8px;
+    background: var(--surface-variant);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.confidence-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease-out;
+}
+
+.confidence-fill.authentic {
+    background: var(--success-color);
+}
+
+.confidence-fill.suspicious {
+    background: var(--warning-color);
+}
+
+.confidence-fill.fraudulent {
+    background: var(--error-color);
+}
+
+/* Indicators List */
+.indicators-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--spacing-sm) 0 0 0;
+}
+
+.indicators-list li {
+    padding: var(--spacing-xs) 0;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+}
+
+.indicators-list li::before {
+    content: '•';
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Results Actions */
+.results-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.results-actions button {
+    min-width: 200px;
+}
+
+/* Animations */
+@keyframes scoreReveal {
+    from {
+        stroke-dashoffset: 628;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .results-container {
+        padding: var(--spacing-sm);
+    }
+
+    .overall-score-card {
+        padding: var(--spacing-md);
+    }
+
+    .score-circle {
+        width: 160px;
+        height: 160px;
+    }
+
+    .score-percentage {
+        font-size: 2.5rem;
+    }
+
+    .result-card {
+        padding: var(--spacing-md);
+    }
+
+    .result-header .material-icons {
+        font-size: 28px;
+    }
+
+    .result-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+
+    .results-actions {
+        flex-direction: column;
+    }
+
+    .results-actions button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    #results-page {
+        padding: var(--spacing-sm);
+    }
+
+    .results-header .page-title {
+        font-size: 1.5rem;
+    }
+
+    .score-circle {
+        width: 140px;
+        height: 140px;
+    }
+
+    .score-percentage {
+        font-size: 2rem;
+    }
+
+    .score-description {
+        font-size: 0.75rem;
+    }
+}

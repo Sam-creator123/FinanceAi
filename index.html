@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsureGuard AI - Intelligent Fraud Detection</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/landing-page.css">
+    <link rel="stylesheet" href="styles/submission-page.css">
+    <link rel="stylesheet" href="styles/loading-page.css">
+    <link rel="stylesheet" href="styles/results-page.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Icons&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-controls">
+        <button id="theme-toggle" class="icon-button" aria-label="Toggle theme">
+            <span class="material-icons">dark_mode</span>
+        </button>
+        <div class="color-picker-container">
+            <button id="color-picker-toggle" class="icon-button" aria-label="Choose accent color">
+                <span class="material-icons">palette</span>
+            </button>
+            <div id="color-picker-menu" class="color-picker-menu hidden">
+                <div class="color-option" data-color="blue" style="background: #2196F3;"></div>
+                <div class="color-option" data-color="purple" style="background: #9C27B0;"></div>
+                <div class="color-option" data-color="green" style="background: #4CAF50;"></div>
+                <div class="color-option" data-color="orange" style="background: #FF9800;"></div>
+                <div class="color-option" data-color="red" style="background: #F44336;"></div>
+                <div class="color-option" data-color="teal" style="background: #009688;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <span class="material-icons">verified_user</span>
+                    <span class="logo-text">InsureGuard AI</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#security">Security</a>
+                </div>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">AI-Powered Insurance Fraud Detection</h1>
+                <p class="hero-subtitle">Advanced multimodal analysis combining voice, image, and text verification for comprehensive claim authentication</p>
+                <button id="start-claim-btn" class="btn-primary btn-large">
+                    <span>Submit Your Claim</span>
+                    <span class="material-icons">arrow_forward</span>
+                </button>
+            </div>
+            <div class="hero-graphic">
+                <div class="floating-card">
+                    <span class="material-icons">mic</span>
+                    <p>Voice Analysis</p>
+                </div>
+                <div class="floating-card">
+                    <span class="material-icons">image</span>
+                    <p>Image Verification</p>
+                </div>
+                <div class="floating-card">
+                    <span class="material-icons">description</span>
+                    <p>Text Authentication</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features-section">
+            <h2 class="section-title">Powerful Features</h2>
+            <div class="features-grid" id="features-container">
+                <!-- Features will be loaded from config -->
+            </div>
+        </section>
+
+        <section id="how-it-works" class="how-it-works-section">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Upload Evidence</h3>
+                    <p>Submit voice recordings, images, and text documentation of your claim</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>AI Analysis</h3>
+                    <p>Our advanced AI models analyze each component for authenticity markers</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Get Results</h3>
+                    <p>Receive a comprehensive authenticity report with confidence scores</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="security" class="security-section">
+            <h2 class="section-title">Enterprise-Grade Security</h2>
+            <div class="security-features">
+                <div class="security-item">
+                    <span class="material-icons">lock</span>
+                    <h3>End-to-End Encryption</h3>
+                    <p>All data encrypted in transit and at rest</p>
+                </div>
+                <div class="security-item">
+                    <span class="material-icons">privacy_tip</span>
+                    <h3>Privacy First</h3>
+                    <p>GDPR and HIPAA compliant processing</p>
+                </div>
+                <div class="security-item">
+                    <span class="material-icons">delete_forever</span>
+                    <h3>Auto-Deletion</h3>
+                    <p>Data automatically deleted after processing</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Submission Page -->
+    <div id="submission-page" class="page">
+        <div class="submission-container">
+            <button id="back-to-home" class="btn-text">
+                <span class="material-icons">arrow_back</span>
+                <span>Back to Home</span>
+            </button>
+
+            <div class="submission-content">
+                <h1 class="page-title">Submit Your Claim</h1>
+                <p class="page-subtitle">Upload all three required documents to proceed with verification</p>
+
+                <div class="upload-grid">
+                    <!-- Voice Upload -->
+                    <div class="upload-card" id="voice-upload-card">
+                        <div class="upload-icon">
+                            <span class="material-icons">mic</span>
+                        </div>
+                        <h3>Voice Sample</h3>
+                        <p class="upload-description">Upload your voice recording (MP3, WAV, OGG)</p>
+                        <input type="file" id="voice-input" accept=".mp3,.wav,.ogg,.m4a" class="file-input" />
+                        <label for="voice-input" class="btn-secondary">
+                            <span class="material-icons">upload_file</span>
+                            <span>Choose File</span>
+                        </label>
+                        <div class="file-status" id="voice-status"></div>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="upload-card" id="image-upload-card">
+                        <div class="upload-icon">
+                            <span class="material-icons">image</span>
+                        </div>
+                        <h3>Image Evidence</h3>
+                        <p class="upload-description">Upload supporting image (JPG, PNG, WEBP)</p>
+                        <input type="file" id="image-input" accept=".jpg,.jpeg,.png,.webp" class="file-input" />
+                        <label for="image-input" class="btn-secondary">
+                            <span class="material-icons">upload_file</span>
+                            <span>Choose File</span>
+                        </label>
+                        <div class="file-status" id="image-status"></div>
+                    </div>
+
+                    <!-- Text Upload -->
+                    <div class="upload-card" id="text-upload-card">
+                        <div class="upload-icon">
+                            <span class="material-icons">description</span>
+                        </div>
+                        <h3>Text Documentation</h3>
+                        <p class="upload-description">Upload claim description (TXT, PDF, DOCX)</p>
+                        <input type="file" id="text-input" accept=".txt,.pdf,.doc,.docx" class="file-input" />
+                        <label for="text-input" class="btn-secondary">
+                            <span class="material-icons">upload_file</span>
+                            <span>Choose File</span>
+                        </label>
+                        <div class="file-status" id="text-status"></div>
+                    </div>
+                </div>
+
+                <div class="terms-section">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="terms-checkbox" />
+                        <span class="checkmark"></span>
+                        <span class="terms-text">I agree to the <a href="#" id="terms-link">Terms and Conditions</a> and consent to AI analysis of submitted materials</span>
+                    </label>
+                </div>
+
+                <button id="submit-claim-btn" class="btn-primary btn-large" disabled>
+                    <span>Submit for Analysis</span>
+                    <span class="material-icons">send</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading/Processing Page -->
+    <div id="loading-page" class="page">
+        <div class="loading-container">
+            <h1 class="page-title">Analyzing Your Claim</h1>
+            <p class="page-subtitle">Our AI is verifying the authenticity of your submission</p>
+
+            <div class="analysis-pipeline">
+                <!-- Voice Analysis -->
+                <div class="analysis-stage" id="voice-analysis">
+                    <div class="stage-header">
+                        <div class="stage-icon">
+                            <span class="material-icons">mic</span>
+                        </div>
+                        <div class="stage-info">
+                            <h3>Voice Analysis</h3>
+                            <p class="stage-status">Waiting...</p>
+                        </div>
+                        <div class="stage-indicator">
+                            <span class="material-icons">schedule</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Image Analysis -->
+                <div class="analysis-stage" id="image-analysis">
+                    <div class="stage-header">
+                        <div class="stage-icon">
+                            <span class="material-icons">image</span>
+                        </div>
+                        <div class="stage-info">
+                            <h3>Image Verification</h3>
+                            <p class="stage-status">Waiting...</p>
+                        </div>
+                        <div class="stage-indicator">
+                            <span class="material-icons">schedule</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Text Analysis -->
+                <div class="analysis-stage" id="text-analysis">
+                    <div class="stage-header">
+                        <div class="stage-icon">
+                            <span class="material-icons">description</span>
+                        </div>
+                        <div class="stage-info">
+                            <h3>Text Authentication</h3>
+                            <p class="stage-status">Waiting...</p>
+                        </div>
+                        <div class="stage-indicator">
+                            <span class="material-icons">schedule</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading-footer">
+                <div class="loading-spinner"></div>
+                <p>This may take a few moments...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Page -->
+    <div id="results-page" class="page">
+        <div class="results-container">
+            <div class="results-header">
+                <h1 class="page-title">Authenticity Report</h1>
+                <p class="page-subtitle">Analysis completed on <span id="analysis-date"></span></p>
+            </div>
+
+            <div class="overall-score-card" id="overall-score">
+                <!-- Overall score will be dynamically generated -->
+            </div>
+
+            <div class="detailed-results">
+                <h2>Detailed Analysis</h2>
+                
+                <div class="result-card" id="voice-result">
+                    <div class="result-header">
+                        <span class="material-icons">mic</span>
+                        <h3>Voice Analysis</h3>
+                    </div>
+                    <div class="result-content">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <div class="result-card" id="image-result">
+                    <div class="result-header">
+                        <span class="material-icons">image</span>
+                        <h3>Image Verification</h3>
+                    </div>
+                    <div class="result-content">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+
+                <div class="result-card" id="text-result">
+                    <div class="result-header">
+                        <span class="material-icons">description</span>
+                        <h3>Text Authentication</h3>
+                    </div>
+                    <div class="result-content">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-actions">
+                <button id="download-report-btn" class="btn-secondary">
+                    <span class="material-icons">download</span>
+                    <span>Download Report</span>
+                </button>
+                <button id="new-claim-btn" class="btn-primary">
+                    <span>Submit New Claim</span>
+                    <span class="material-icons">add</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="terms-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Terms and Conditions</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Last Updated: October 2025</strong></p>
+                <h3>1. Acceptance of Terms</h3>
+                <p>By using InsureGuard AI, you agree to these terms and conditions.</p>
+                <h3>2. Data Processing</h3>
+                <p>We process your submitted data using artificial intelligence for fraud detection purposes only.</p>
+                <h3>3. Privacy & Security</h3>
+                <p>All data is encrypted and automatically deleted within 30 days of processing.</p>
+                <h3>4. Accuracy Disclaimer</h3>
+                <p>AI analysis provides probability scores and should be used as one factor in decision-making.</p>
+                <h3>5. User Responsibilities</h3>
+                <p>You must ensure all submitted information is accurate and you have the right to submit it.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary modal-accept">I Accept</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="config/app-config.js"></script>
+    <script src="config/features-config.js"></script>
+    <script src="scripts/theme-manager.js"></script>
+    <script src="scripts/page-navigation.js"></script>
+    <script src="scripts/file-upload-handler.js"></script>
+    <script src="scripts/analysis-simulator.js"></script>
+    <script src="scripts/results-renderer.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>
