@@ -16,6 +16,9 @@ def check_voice_match(file1, file2, threshold=0.55):
     print(f"[VOICE MATCH] Cosine similarity: {sim:.4f}")
     return sim >= threshold
 
+def analyze_voice(file1):
+    return "voice analyzed"
+
 '''def analyze_image(image_path):
     """Use the same logic as main.py to get Gemini risk score."""
     load_dotenv()

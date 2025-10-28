@@ -34,6 +34,13 @@ class ResultsRenderer {
             });
         }
         
+        // Handle errors in results
+        if (results.error) {
+            alert(`Analysis error: ${results.error}`);
+            window.pageNavigation.navigateTo('submission');
+            return;
+        }
+        
         // Calculate overall score
         const overallScore = this.calculateOverallScore(results);
         
@@ -47,13 +54,19 @@ class ResultsRenderer {
     }
     
     calculateOverallScore(results) {
-        const values = Object.values(results).filter(r => r !== null);
+        const values = Object.values(results).filter(r => r !== null && !r.error);
         
         if (values.length === 0) {
             return { confidence: 0, status: 'fraudulent' };
         }
         
-        const avgConfidence = values.reduce((sum, r) => sum + r.confidence, 0) / values.length;
+        // Sum valid confidences
+        const validConfidences = values.filter(r => r.confidence !== undefined).map(r => r.confidence);
+        if (validConfidences.length === 0) {
+            return { confidence: 0, status: 'fraudulent' };
+        }
+        
+        const avgConfidence = validConfidences.reduce((sum, c) => sum + c, 0) / validConfidences.length;
         const thresholds = APP_CONFIG.analysis.thresholds;
         
         let status;
@@ -132,19 +145,43 @@ class ResultsRenderer {
     
     displayIndividualResult(type, result) {
         const container = this[`${type}Result`];
-        if (!container || !result) return;
+        if (!container || !result) {
+            // Hide the container if no result
+            if (container) container.style.display = 'none';
+            return;
+        }
         
         const contentDiv = container.querySelector('.result-content');
         if (!contentDiv) return;
         
+        // Show the container
+        container.style.display = 'block';
+        
+        // Handle errors
+        if (result.error) {
+            container.classList.add('error');
+            contentDiv.innerHTML = `
+                <div class="result-row error-message">
+                    <span class="material-icons">error</span>
+                    <span>Error: ${result.error}</span>
+                </div>
+            `;
+            return;
+        }
+        
         const statusLabels = {
             authentic: 'Authentic',
             suspicious: 'Suspicious',
-            fraudulent: 'Fraudulent'
+            fraudulent: 'Fraudulent',
+            error: 'Error'
         };
         
         // Add status class to card
         container.classList.add(result.status);
+        
+        // Extract confidence - handle different result formats
+        const confidence = result.confidence || 0;
+        const status = result.status || 'suspicious';
         
         // Build indicators HTML
         const indicatorsHTML = result.indicators && result.indicators.length > 0
@@ -161,15 +198,15 @@ class ResultsRenderer {
         contentDiv.innerHTML = `
             <div class="result-row">
                 <span class="result-label">Status</span>
-                <span class="result-value status-badge ${result.status}">${statusLabels[result.status]}</span>
+                <span class="result-value status-badge ${status}">${statusLabels[status]}</span>
             </div>
             <div class="confidence-bar-container">
                 <div class="confidence-label">
                     <span>Confidence Score</span>
-                    <span>${result.confidence}%</span>
+                    <span>${confidence}%</span>
                 </div>
                 <div class="confidence-bar">
-                    <div class="confidence-fill ${result.status}" style="width: 0%"></div>
+                    <div class="confidence-fill ${status}" style="width: 0%"></div>
                 </div>
             </div>
             ${indicatorsHTML}
@@ -179,7 +216,7 @@ class ResultsRenderer {
         setTimeout(() => {
             const fill = contentDiv.querySelector('.confidence-fill');
             if (fill) {
-                fill.style.width = `${result.confidence}%`;
+                fill.style.width = `${confidence}%`;
             }
         }, 200);
     }

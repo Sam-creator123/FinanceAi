@@ -10,13 +10,6 @@ class FileUploadHandler {
             image: null,
             text: null,
         };
-
-        // Filenames as saved on server after upload
-        this.uploadedFilesServer = {
-            voice: null,
-            image: null,
-            text: null,
-        };
         
         this.inputs = {
             voice: document.getElementById('voice-input'),
@@ -66,17 +59,7 @@ class FileUploadHandler {
             });
         }
 
-        // Upload-to-server buttons
-        const uploadVoiceBtn = document.getElementById('upload-voice-server-btn');
-        const uploadImageBtn = document.getElementById('upload-image-server-btn');
-
-        if (uploadVoiceBtn) {
-            uploadVoiceBtn.addEventListener('click', () => this.uploadFileToServer('voice'));
-        }
-
-        if (uploadImageBtn) {
-            uploadImageBtn.addEventListener('click', () => this.uploadFileToServer('image'));
-        }
+        // Upload-to-server buttons are now deprecated - files are sent directly in submitClaim
         
         // Listen for reset event
         document.addEventListener('resetSubmission', () => {
@@ -180,46 +163,38 @@ class FileUploadHandler {
             // Trigger server-side analysis flow:
             (async () => {
                 try {
-                    const voiceOk = await this.uploadFileToServer('voice');
-                    const imageOk = await this.uploadFileToServer('image');
-
-                    if (!voiceOk || !imageOk) {
-                        // If upload failed, do not proceed
-                        return;
-                    }
-
-                    // Read text file content (if provided)
-                    let textContent = '';
-                    const textFile = this.uploadedFiles['text'];
-                    if (textFile) {
-                        textContent = await new Promise((resolve, reject) => {
-                            const reader = new FileReader();
-                            reader.onload = () => resolve(reader.result);
-                            reader.onerror = () => reject(new Error('Failed to read text file'));
-                            reader.readAsText(textFile);
-                        });
-                    }
-
                     // Show loading page while server analyzes
                     window.pageNavigation.navigateTo('loading');
 
-                    // Call backend analyze endpoint with server filenames and text
-                    const payload = {
-                        image: this.uploadedFilesServer['image'],
-                        voice: this.uploadedFilesServer['voice'],
-                        text: textContent,
-                    };
+                    // Create FormData with all files
+                    const formData = new FormData();
+                    
+                    // Add voice file if uploaded
+                    if (this.uploadedFiles['voice']) {
+                        formData.append('voice', this.uploadedFiles['voice']);
+                    }
+                    
+                    // Add image file if uploaded
+                    if (this.uploadedFiles['image']) {
+                        formData.append('image', this.uploadedFiles['image']);
+                    }
+                    
+                    // Add text file if uploaded
+                    if (this.uploadedFiles['text']) {
+                        formData.append('text', this.uploadedFiles['text']);
+                    }
 
+                    // Call backend analyze endpoint with all files in one request
                     const resp = await fetch('/analyze', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload),
+                        body: formData,
                     });
 
                     if (!resp.ok) {
-                        this.updateFileStatus('voice', 'error', 'Analysis failed on server');
-                        this.updateFileStatus('image', 'error', 'Analysis failed on server');
-                        console.error('Analyze failed', resp.status);
+                        const errorText = await resp.text();
+                        console.error('Analyze failed', resp.status, errorText);
+                        alert('Analysis failed. Please try again.');
+                        window.pageNavigation.navigateTo('submission');
                         return;
                     }
 
@@ -234,54 +209,14 @@ class FileUploadHandler {
                     // Navigate to results page
                     window.pageNavigation.navigateTo('results');
                 } catch (err) {
-                    console.error('Error uploading files before analysis', err);
-                    this.updateFileStatus('voice', 'error', 'Upload/analysis failed.');
-                    this.updateFileStatus('image', 'error', 'Upload/analysis failed.');
+                    console.error('Error during analysis', err);
+                    alert('An error occurred during analysis. Please try again.');
+                    window.pageNavigation.navigateTo('submission');
                 }
             })();
         }
     }
 
-    async uploadFileToServer(type) {
-        const file = this.uploadedFiles[type];
-        if (!file) {
-            this.updateFileStatus(type, 'error', 'No file selected to upload');
-            return false;
-        }
-
-        const endpoint = type === 'voice' ? '/upload/voice' : '/upload/image';
-        const formData = new FormData();
-        formData.append(type, file, file.name);
-
-        try {
-            const resp = await fetch(endpoint, {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!resp.ok) {
-                const text = await resp.text();
-                this.updateFileStatus(type, 'error', `Server error: ${resp.status}`);
-                console.error('Upload failed', resp.status, text);
-                return false;
-            }
-
-            const data = await resp.json();
-            if (data && data.status === 'success') {
-                this.updateFileStatus(type, 'success', `Uploaded: ${data.filename}`);
-                // store server filename
-                this.uploadedFilesServer[type] = data.filename;
-                return true;
-            }
-
-            this.updateFileStatus(type, 'error', data?.error || 'Unknown server response');
-            return false;
-        } catch (err) {
-            console.error('Upload error', err);
-            this.updateFileStatus(type, 'error', 'Network error while uploading');
-            return false;
-        }
-    }
     
     setupTermsModal() {
         const termsLink = document.getElementById('terms-link');

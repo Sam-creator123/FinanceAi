@@ -1,0 +1,6 @@
+Dear Customer,
+We have noticed suspicious login activity on your Axis Bank account. To avoid permanent suspension, please verify your account details immediately. Click the link below and provide your card number, CVV, and OTP for confirmation.
+
+secure-axis-verification.in
+
+Failure to act within 24 hours will result in your account being blocked for security reasons. Please treat this as urgent.
