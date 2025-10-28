@@ -1,0 +1,69 @@
+Fab.toLab
+Search
+SELECTrONiCS 2.0
+SBCs
+Robotics
+RC
+Sensors
+Radio
+Accessory
+Component
+Power
+Tools
+DIY
+Books
+IOT
+Account
+Order History
+Order Information
+Order History
+Order Details
+Order ID: #62680
+Payment Method:Card/Net Banking Wallet/UPI - CashFree
+Date Added:19/09/2025
+Shipping Method:Blue Dart Domestic India Insured (Weight: 150.00g)
+Payment Address
+Shipping Address
+Ayush Singh
+Ayush
+B-8 Suvalsar Hostel, IIT Mandi North Campus, Kamand
+Singh
+Mandi
+75005
+B8 Suvalsar Hostel, IIT Mandi North Campus; Kamand, Mandi, Himachal
+Himachal Pradesh
+Pradesh
+India
+Mandi
+75005
+Himachal Pradesh
+India
+Product Name
+Model
+Quantity
+Price
+Total
+Adafruit 5427 Bangle js v2 - Hackable
+Ada-Bangle js-
+ro 12,135.00
+Javascript Smart Watch
+12,135.00
+Sub-Total
+12,135.00
+Blue Dart Domestic India Insured
+150.00
+(Weight: 150.00g)
+IGST @ 18.00%
+{o
+2,184.30
+Total
+14,469.30
+Order History
+Date Added
+Status
+Comment
+19/09/2025
+Processing
+Continiie
+Kits
+J0
