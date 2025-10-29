@@ -1,12 +1,30 @@
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from typing import Dict, Optional
 import os
 from werkzeug.utils import secure_filename
-from backend import analyze_image, analyze_text, analyze_voice
+# from backend import analyze_image
+# Temporary mock functions for testing
+def analyze_image(path):
+    return 0.2  # 20% risk score
 
-app = Flask(__name__, 
-            static_folder='static',
-            static_url_path='/static',
-            template_folder='templates')
+def analyze_text(content):
+    return 0.15  # 15% fraud score
+
+def analyze_voice(path):
+    return True  # voice match
+
+app = FastAPI(
+    title="InsureGuard AI",
+    description="AI-Powered Insurance Fraud Detection",
+    version="1.0.0"
+)
+
+# Static files and templates configuration
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'
@@ -24,18 +42,22 @@ def allowed_file(filename, file_type):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS[file_type]
 
-@app.route('/')
-def index():
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
     """Serve the main application page"""
-    return render_template('index.html')
+    return templates.TemplateResponse("index.html", {"request": request})
 
-@app.route('/favicon.ico')
-def favicon():
+@app.get('/favicon.ico')
+async def favicon():
     """Serve favicon"""
-    return send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/x-icon')
+    return FileResponse('static/favicon.ico')
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
+@app.post('/analyze')
+async def analyze(
+    image: Optional[UploadFile] = File(None),
+    voice: Optional[UploadFile] = File(None),
+    text: Optional[UploadFile] = File(None)
+):
     """
     Accepts multipart form data with:
     - image: image file (optional)
@@ -47,79 +69,79 @@ def analyze():
     
     try:
         # Handle image
-        if 'image' in request.files:
-            image_file = request.files['image']
-            if image_file and image_file.filename != '':
-                if not allowed_file(image_file.filename, 'image'):
-                    results['image'] = {'error': 'Invalid file type for image'}
-                else:
-                    filename = secure_filename(image_file.filename)
-                    img_path = os.path.join(UPLOAD_FOLDER, filename)
-                    image_file.save(img_path)
-                    
-                    try:
-                        risk_score = analyze_image(img_path)
-                        confidence = int((1.0 - float(risk_score)) * 100)
-                        results['image'] = {
-                            'confidence': confidence,
-                            'status': 'authentic' if confidence >= 70 else 'suspicious',
-                            'risk_score': float(risk_score)
-                        }
-                    except Exception as e:
-                        results['image'] = {'error': str(e), 'status': 'error'}
+        if image and image.filename:
+            if not allowed_file(image.filename, 'image'):
+                results['image'] = {'error': 'Invalid file type for image'}
+            else:
+                filename = secure_filename(image.filename)
+                img_path = os.path.join(UPLOAD_FOLDER, filename)
+                content = await image.read()
+                with open(img_path, "wb") as buffer:
+                    buffer.write(content)
+                
+                try:
+                    risk_score = analyze_image(img_path)
+                    confidence = int((1.0 - float(risk_score)) * 100)
+                    results['image'] = {
+                        'confidence': confidence,
+                        'status': 'authentic' if confidence >= 70 else 'suspicious',
+                        'risk_score': float(risk_score)
+                    }
+                except Exception as e:
+                    results['image'] = {'error': str(e), 'status': 'error'}
         
         # Handle text
-        if 'text' in request.files:
-            text_file = request.files['text']
-            if text_file and text_file.filename != '':
-                if not allowed_file(text_file.filename, 'text'):
-                    results['text'] = {'error': 'Invalid file type for text'}
-                else:
-                    text_content = text_file.read().decode('utf-8')
-                    
-                    try:
-                        fraud_score = analyze_text(text_content)
-                        confidence = int((1.0 - float(fraud_score)) * 100)
-                        results['text'] = {
-                            'confidence': confidence,
-                            'status': 'authentic' if confidence >= 70 else 'suspicious',
-                            'fraud_score': float(fraud_score)
-                        }
-                    except Exception as e:
-                        results['text'] = {'error': str(e), 'status': 'error'}
+        if text and text.filename:
+            if not allowed_file(text.filename, 'text'):
+                results['text'] = {'error': 'Invalid file type for text'}
+            else:
+                content = await text.read()
+                text_content = content.decode('utf-8')
+                
+                try:
+                    fraud_score = analyze_text(text_content)
+                    confidence = int((1.0 - float(fraud_score)) * 100)
+                    results['text'] = {
+                        'confidence': confidence,
+                        'status': 'authentic' if confidence >= 70 else 'suspicious',
+                        'fraud_score': float(fraud_score)
+                    }
+                except Exception as e:
+                    results['text'] = {'error': str(e), 'status': 'error'}
         
         # Handle voice
-        if 'voice' in request.files:
-            voice_file = request.files['voice']
-            if voice_file and voice_file.filename != '':
-                if not allowed_file(voice_file.filename, 'voice'):
-                    results['voice'] = {'error': 'Invalid file type for voice'}
-                else:
-                    filename = secure_filename(voice_file.filename)
-                    voice_path = os.path.join(UPLOAD_FOLDER, filename)
-                    voice_file.save(voice_path)
+        if voice and voice.filename:
+            if not allowed_file(voice.filename, 'voice'):
+                results['voice'] = {'error': 'Invalid file type for voice'}
+            else:
+                filename = secure_filename(voice.filename)
+                voice_path = os.path.join(UPLOAD_FOLDER, filename)
+                content = await voice.read()
+                with open(voice_path, "wb") as buffer:
+                    buffer.write(content)
+                
+                try:
+                    match_result = analyze_voice(voice_path)
+                    # Convert match_result to boolean if needed
+                    if isinstance(match_result, str):
+                        # Assuming analyze_voice returns string
+                        confidence = 85  # Default confidence for voice match
+                    else:
+                        confidence = 85 if match_result else 30
                     
-                    try:
-                        match_result = analyze_voice(voice_path)
-                        # Convert match_result to boolean if needed
-                        if isinstance(match_result, str):
-                            # Assuming analyze_voice returns string
-                            confidence = 85  # Default confidence for voice match
-                        else:
-                            confidence = 85 if match_result else 30
-                        
-                        results['voice'] = {
-                            'confidence': confidence,
-                            'match': bool(match_result),
-                            'status': 'authentic' if confidence >= 70 else 'suspicious'
-                        }
-                    except Exception as e:
-                        results['voice'] = {'error': str(e), 'status': 'error'}
+                    results['voice'] = {
+                        'confidence': confidence,
+                        'match': bool(match_result),
+                        'status': 'authentic' if confidence >= 70 else 'suspicious'
+                    }
+                except Exception as e:
+                    results['voice'] = {'error': str(e), 'status': 'error'}
     
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        raise HTTPException(status_code=500, detail=str(e))
     
-    return jsonify(results)
+    return results
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
